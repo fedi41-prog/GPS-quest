@@ -1,4 +1,4 @@
-package org.fedi4.gpsquest.ui.theme
+package org.fedi4.gpsquest.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
