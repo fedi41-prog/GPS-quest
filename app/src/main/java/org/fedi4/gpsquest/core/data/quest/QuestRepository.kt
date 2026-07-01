@@ -21,13 +21,26 @@ class QuestRepository {
 
 
         _quests.update { quests ->
-            quests + Quest(
-                name = "cool quest bruh",
-                tasks = listOf(
-                    QuestTask(0, "abracadabra", Coordinates(1.0, 1.0), "first task", 100f),
-                    QuestTask(1, "cadabrababra", Coordinates(1.0, 1.0), "firdawdwst task", 100f),
-                    QuestTask(2, "tralalerotralala", Coordinates(1.0, 1.0), "first taddsk", 100f),
-                    QuestTask(3, "tungtungtungsahur ", Coordinates(1.0, 1.0), "first dwda task", 100f)
+
+
+            return@update quests + listOf<Quest>(
+                Quest(
+                    name = "cool quest bruh",
+                    tasks = listOf(
+                        QuestTask(0, "abracadabra", Coordinates(1.0, 1.0), "first task", 100f),
+                        QuestTask(1, "cadabrababra", Coordinates(1.0, 1.0), "firdawdwst task", 100f),
+                        QuestTask(2, "tralalerotralala", Coordinates(1.0, 1.0), "first taddsk", 100f),
+                        QuestTask(3, "tungtungtungsahur ", Coordinates(1.0, 1.0), "first dwda task", 100f)
+                    )
+                ),
+                Quest(
+                    name = "cool quest bruh",
+                    tasks = listOf(
+                        QuestTask(0, "abracadabra", Coordinates(1.0, 1.0), "first task", 100f),
+                        QuestTask(1, "cadabrababra", Coordinates(1.0, 1.0), "firdawdwst task", 100f),
+                        QuestTask(2, "tralalerotralala", Coordinates(1.0, 1.0), "first taddsk", 100f),
+                        QuestTask(3, "tungtungtungsahur ", Coordinates(1.0, 1.0), "first dwda task", 100f)
+                    )
                 )
             )
         }

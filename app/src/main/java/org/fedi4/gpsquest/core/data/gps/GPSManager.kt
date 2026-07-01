@@ -6,6 +6,10 @@ import android.content.Context
 import android.location.LocationManager
 import android.os.Looper
 import com.google.android.gms.location.*
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
+
 
 class GPSManager(
     private val context: Context

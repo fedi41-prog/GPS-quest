@@ -1,5 +1,8 @@
 package org.fedi4.gpsquest.core.ui.quest
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -23,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import org.fedi4.gpsquest.core.data.gps.GPSState
 import org.fedi4.gpsquest.core.viewmodel.QuestViewModel
 import org.fedi4.gpsquest.core.ui.components.ActiveTaskPage
 import org.fedi4.gpsquest.core.ui.components.CompletedTaskPage
@@ -99,10 +103,42 @@ fun QuestTopBar(modifier: Modifier = Modifier, viewModel: QuestViewModel = viewM
 
 @Composable
 fun QuestBottomBar(modifier: Modifier = Modifier, viewModel: QuestViewModel = viewModel(factory = QuestViewModel.Factory)) {
+    val gpsState by viewModel.gpsState.collectAsState()
+
     BottomAppBar(
         modifier = modifier,
     ) {
-        Text(text = "QUEST SCREEN")
+        when (gpsState) {
+            is GPSState.Disabled -> {
+                Text(text = "GPS is disabled")
+            }
+            is GPSState.Loading -> {
+                Text(text = "GPS loading")
+            }
+            is GPSState.PermissionMissing -> {
+                Text(text = "GPS permission missing")
 
+            }
+            is GPSState.Ready -> {
+                Text(text = "GPS ready")
+                Text(text = "GPS location: ${(gpsState as GPSState.Ready).location.latitude}, ${(gpsState as GPSState.Ready).location.longitude}")
+            }
+        }
+
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+
+        if (granted) {
+            viewModel.refreshGPS()
+        }
+    }
+
+    LaunchedEffect(gpsState) {
+        if (gpsState == GPSState.PermissionMissing) {
+            launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
     }
 }
