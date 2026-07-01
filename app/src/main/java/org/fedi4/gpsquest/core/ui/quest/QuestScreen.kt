@@ -1,9 +1,13 @@
 package org.fedi4.gpsquest.core.ui.quest
 
 import android.Manifest
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -31,8 +35,10 @@ import org.fedi4.gpsquest.core.viewmodel.QuestViewModel
 import org.fedi4.gpsquest.core.ui.components.ActiveTaskPage
 import org.fedi4.gpsquest.core.ui.components.CompletedTaskPage
 import org.fedi4.gpsquest.core.ui.components.LockedTaskPage
+import org.fedi4.gpsquest.core.ui.map.QuestMap
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun QuestScreen(
     modifier: Modifier = Modifier,
@@ -41,6 +47,7 @@ fun QuestScreen(
 ) {
     val quests by viewModel.quests.collectAsState()
     val questRun by viewModel.questRun.collectAsState()
+    val gpsState by viewModel.gpsState.collectAsState()
     val progress = questRun?.progress ?: 0
 
     Scaffold(
@@ -61,22 +68,27 @@ fun QuestScreen(
         modifier = modifier
     )  {
         innerPadding ->
-        val pagerState = rememberPagerState() { (questRun?.progress ?: -1) + 1};
+
+
+        val pagerState = rememberPagerState() { (questRun?.progress ?: -1) + 1 };
         LaunchedEffect(progress) {
             questRun?.let {
                 pagerState.animateScrollToPage(it.progress)
             }
         }
-        HorizontalPager(pagerState, Modifier.padding(innerPadding)) {
-            index ->
+
+        // ELEMENTS
+        Column(Modifier.padding(innerPadding)) {
+            HorizontalPager(pagerState, modifier = Modifier.fillMaxHeight(0.5f)) { index ->
                 when {
-                    index < progress ->  CompletedTaskPage(task = questRun!!.quest.tasks[index]) // COMPLETED
+                    index < progress -> CompletedTaskPage(task = questRun!!.quest.tasks[index]) // COMPLETED
                     index == progress -> ActiveTaskPage(task = questRun!!.quest.tasks[index])    // ACTIVE
-                    else ->              LockedTaskPage(task = questRun!!.quest.tasks[index])    // LOCKED
+                    else -> LockedTaskPage(task = questRun!!.quest.tasks[index])    // LOCKED
                 }
+            }
 
+            QuestMap(Modifier.fillMaxHeight(0.5f), gpsState = gpsState)
         }
-
     }
 
 }

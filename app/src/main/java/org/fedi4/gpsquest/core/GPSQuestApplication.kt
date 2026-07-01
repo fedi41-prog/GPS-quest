@@ -5,6 +5,8 @@ import org.fedi4.gpsquest.core.data.gps.GPSManager
 import org.fedi4.gpsquest.core.data.gps.LocationRepository
 import org.fedi4.gpsquest.core.data.quest.QuestEngine
 import org.fedi4.gpsquest.core.data.quest.QuestRepository
+import org.maplibre.android.MapLibre
+import org.maplibre.android.WellKnownTileServer
 
 
 class GPSQuestApplication : Application() {
@@ -22,4 +24,9 @@ class GPSQuestApplication : Application() {
     }
 
     val questEngine = QuestEngine(questRepository)
+
+    override fun onCreate() {
+        super.onCreate()
+
+    }
 }
