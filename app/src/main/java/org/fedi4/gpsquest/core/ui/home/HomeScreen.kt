@@ -1,7 +1,12 @@
 package org.fedi4.gpsquest.core.ui.home
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -9,15 +14,23 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.fedi4.gpsquest.core.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen (
-    modifier: Modifier = Modifier, viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
+    modifier: Modifier = Modifier, viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory), onStartQuest: () -> Unit
 ) {
+
+    val quests by viewModel.quests.collectAsState()
+    Log.d("HomeScreen", "quests: $quests")
+    Log.d("HomeScreen", "quests size: ${quests.size}")
 
     Scaffold(
         topBar = { TopAppBar(
@@ -25,17 +38,35 @@ fun HomeScreen (
         ) },
         bottomBar = {
             BottomAppBar() {
-                Text("Wow a cool quest app...")
+                Text("HOME SCREEN")
             } },
         modifier = modifier
     ) { innerPadding ->
-        Column(Modifier.padding(innerPadding)) {
-            Text("check out all of the questsssss!")
-            Button(onClick = { viewModel.startQuest(viewModel.quests.value!!) }) {
-                Text("Start Quest")
+//        Column(Modifier.padding(innerPadding)) {
+//            Text("check out all of the questsssss!")
+//            Button(onClick = {
+//                onStartQuest();
+//            }) {
+//                Text("Start Quest")
+//            }
+//        }
+        val lazyGridState = rememberLazyGridState()
+        LazyVerticalGrid(GridCells.Fixed(2), Modifier.padding(innerPadding), lazyGridState) {
+
+            items(quests.size) {
+
+                QuestGridItem(Modifier.padding(10.dp), quests[it]) {
+                    onStartQuest()
+                    viewModel.startQuest(quests[it])
+                }
             }
+
         }
-
     }
+}
 
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen() {}
 }

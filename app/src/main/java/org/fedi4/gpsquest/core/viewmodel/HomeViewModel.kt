@@ -16,7 +16,7 @@ class HomeViewModel(
     private val engine: QuestEngine
 ) : ViewModel() {
 
-    val quests = questRepository.currentQuest // later multiple
+    val quests = questRepository.quests
 
     fun startQuest(quest: Quest){
         engine.startQuest(quest)

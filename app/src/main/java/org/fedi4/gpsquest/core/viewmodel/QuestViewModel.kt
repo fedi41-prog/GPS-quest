@@ -1,19 +1,18 @@
 package org.fedi4.gpsquest.core.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.fedi4.gpsquest.core.data.gps.GPSState
 import org.fedi4.gpsquest.core.data.quest.QuestEngine
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import org.fedi4.gpsquest.core.GPSQuestApplication
 import org.fedi4.gpsquest.core.data.gps.LocationRepository
-import org.fedi4.gpsquest.core.data.models.QuestState
-import org.fedi4.gpsquest.core.data.models.TaskState
+import org.fedi4.gpsquest.core.data.models.Quest
 import org.fedi4.gpsquest.core.data.quest.QuestRepository
 
 class QuestViewModel(
@@ -24,8 +23,12 @@ class QuestViewModel(
 ) : ViewModel() {
     val gpsState = locationRepository.state
 
+    val questRun = questRepository.questRun
+    val quests = questRepository.quests
+
     init {
         locationRepository.start()
+        Log.d("QuestViewModel", "QuestViewModel created")
     }
 
     fun refreshGPS() {
@@ -36,24 +39,15 @@ class QuestViewModel(
         locationRepository.stop()
     }
 
-    private val _questState = QuestState( // autocomplete cooked
-        quest = questRepository.currentQuest.value,
-        questName =questRepository.currentQuest.value?.name ?: "",
-        tasks = questRepository.currentQuest.value?.tasks?.map {
-            TaskState(
-                task = it,
-                taskName = it.name,
-                taskDescription = it.description,
-                finished = false
-            )
-        } ?: emptyList(),
-        progress = 0,
-        finished = false
-    )
-    val questState: MutableStateFlow<QuestState> = MutableStateFlow(_questState)
+
 
     init {
         observeGPS()
+    }
+
+    fun startQuest(quest: Quest){
+        engine.startQuest(quest)
+//        app.isRunningQuest.value = true
     }
 
     private fun observeGPS() {

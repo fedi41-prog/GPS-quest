@@ -6,6 +6,7 @@ data class Quest(
 )
 
 data class QuestTask(
+    val idx: Int,
     val name: String,
     val coordinates: Coordinates,
     val description: String,

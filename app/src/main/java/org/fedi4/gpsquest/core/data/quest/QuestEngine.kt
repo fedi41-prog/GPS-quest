@@ -1,77 +1,52 @@
 package org.fedi4.gpsquest.core.data.quest
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import android.util.Log
 import org.fedi4.gpsquest.core.data.gps.LocationState
 import org.fedi4.gpsquest.core.data.models.Quest
+import org.fedi4.gpsquest.core.data.models.QuestRun
 import org.fedi4.gpsquest.core.data.models.QuestTask
 
 class QuestEngine(
     private val repository: QuestRepository
 ) {
 
-    private val _currentTask =
-        MutableStateFlow<QuestTask?>(null)
-    val currentTask = _currentTask.asStateFlow()
 
-    private val _progress =
-        MutableStateFlow(0)
-    val progress = _progress.asStateFlow()
-
-    private val _distance =
-        MutableStateFlow(0f)
-    val distance = _distance.asStateFlow()
-
-    private val _finished =
-        MutableStateFlow(false)
-    val finished = _finished.asStateFlow()
+    val questRun = repository.questRun
 
 
     fun startQuest(quest: Quest) {
-
-        repository.currentQuest.value = quest
-
-        _progress.value = 0
-
-        _finished.value = false
-
-        _currentTask.value = quest.tasks.first()
-
+        repository.updateRun(
+            QuestRun(
+                quest = quest,
+                progress = 0
+            )
+        )
+        Log.d("QuestEngine", "Quest started: ${quest.name}")
+        Log.d("QuestEngine", "Quest progress: ${questRun.value?.progress}")
+        Log.d("QuestEngine", "Quest tasks: ${questRun.value?.quest?.tasks}")
     }
 
+    fun currentTask(): QuestTask? {
+        return questRun.value?.quest?.tasks?.get(questRun.value?.progress ?: return null) as QuestTask?
+    }
     fun updateLocation(location: LocationState) {
-
-        val task = _currentTask.value ?: return
-
-//        if(step.type !is LocationStep)
-//            return
+        val task = currentTask()
 
         val distance = 10000f
 
-        _distance.value = distance
-
-        if(distance <= task.radius){
+        if(distance <= (task?.radius ?: return)){
             next()
         }
     }
 
     fun next() {
+        val run = repository.questRun.value ?: return
 
-        val quest =
-            repository.currentQuest.value ?: return
-
-        _progress.value++
-
-        if(_progress.value >= quest.tasks.size){
-
-            _finished.value = true
-
-            return
-
-        }
-
-        _currentTask.value =
-            quest.tasks[_progress.value]
-
+        repository.updateRun(
+            run.copy(
+                progress = run.progress + 1
+            )
+        )
+        Log.d("QuestEngine", "Quest progress: ${run.progress}")
     }
 }
