@@ -2,7 +2,8 @@ package org.fedi4.gpsquest.core.data.models
 
 data class Quest(
     val name : String,
-    val tasks : List<QuestTask>
+    val tasks : List<QuestTask>,
+    val startLocation : Coordinates
 )
 
 data class QuestTask(

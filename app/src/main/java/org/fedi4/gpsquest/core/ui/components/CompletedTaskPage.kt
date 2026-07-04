@@ -2,6 +2,7 @@ package org.fedi4.gpsquest.core.ui.components
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -24,47 +25,52 @@ import org.fedi4.gpsquest.core.data.models.QuestTask
 @Composable
 fun CompletedTaskPage(modifier: Modifier = Modifier, task: QuestTask) {
 
-    Column(modifier = modifier.fillMaxSize().padding(10.dp)) {
-        // TASK ID
-        Text(
-            text = "TASK " + (task.idx + 1).toString(),
-            Modifier.fillMaxWidth().align(Alignment.CenterHorizontally).background(Color.Green),
-            textAlign = TextAlign.Center,
-            letterSpacing = 15.sp,
-            fontSize = 35.sp,
-            color = Color.White,
-            fontWeight = FontWeight.Bold
-        )
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(modifier = Modifier.padding(10.dp)) {
+            // TASK ID
+            Text(
+                text = "TASK " + (task.idx + 1).toString(),
+                Modifier.fillMaxWidth().align(Alignment.CenterHorizontally).background(Color.Green),
+                textAlign = TextAlign.Center,
+                letterSpacing = 15.sp,
+                fontSize = 35.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
 
-        // TASK NAME
-        Text(
-            text = task.name,
-            Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
-            textAlign = TextAlign.Center,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Thin
-        )
-        Text(
-            text = task.description,
-            Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
-            textAlign = TextAlign.Center,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Thin
-        )
-        Text(
-            text = task.coordinates.latitude.toString(),
-            Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
-        )
-        Text(
-            text = task.coordinates.longitude.toString(),
-            Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
-        )
-        Text(
-            text = task.radius.toString(),
-            Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
-        )
+            // TASK NAME
+            Text(
+                text = task.name,
+                Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Thin
+            )
+            Text(
+                text = task.description,
+                Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Thin
+            )
+            Text(
+                text = task.coordinates.latitude.toString(),
+                Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
+            )
+            Text(
+                text = task.coordinates.longitude.toString(),
+                Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
+            )
+            Text(
+                text = task.radius.toString(),
+                Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
+            )
 
 
-        Spacer(modifier = Modifier.fillMaxHeight())
+            Spacer(modifier = Modifier.fillMaxHeight())
+        }
+
+        // Overlay
+        Box(modifier = Modifier.matchParentSize().background(Color.White.copy(0.2f)))
     }
 }

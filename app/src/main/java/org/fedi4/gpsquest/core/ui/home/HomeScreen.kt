@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import org.fedi4.gpsquest.core.ui.components.GPSStatusView
 import org.fedi4.gpsquest.core.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,6 +30,7 @@ fun HomeScreen (
 ) {
 
     val quests by viewModel.quests.collectAsState()
+
     Log.d("HomeScreen", "quests: $quests")
     Log.d("HomeScreen", "quests size: ${quests.size}")
 
@@ -60,7 +62,6 @@ fun HomeScreen (
                     viewModel.startQuest(quests[it])
                 }
             }
-
         }
     }
 }

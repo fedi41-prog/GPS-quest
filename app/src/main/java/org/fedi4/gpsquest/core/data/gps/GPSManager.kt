@@ -41,7 +41,7 @@ class GPSManager(
             Priority.PRIORITY_HIGH_ACCURACY,
             1000L
         )
-            .setMinUpdateDistanceMeters(1f)
+            .setMinUpdateDistanceMeters(0f)
             .build()
 
         callback = object : LocationCallback() {

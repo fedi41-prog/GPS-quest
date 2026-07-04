@@ -2,11 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Always include this permission -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <!-- Include only if your app benefits from precise location access. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
+        tools:ignore="BackgroundLocationPolicy" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"
+        tools:ignore="ForegroundServicesPolicy" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+
 
     <application
         android:name="org.fedi4.gpsquest.core.GPSQuestApplication"
@@ -23,7 +29,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.GPSquest">
+            android:theme="@style/Theme.GPSquest"> 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,6 +37,11 @@
             </intent-filter>
 
         </activity>
+
+        <service
+            android:name=".core.service.LocationForegroundService"
+            android:foregroundServiceType="location"
+            android:exported="false" />
 
 
     </application>

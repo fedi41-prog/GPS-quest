@@ -27,20 +27,22 @@ class QuestRepository {
                 Quest(
                     name = "cool quest bruh",
                     tasks = listOf(
-                        QuestTask(0, "abracadabra", Coordinates(1.0, 1.0), "first task", 100f),
-                        QuestTask(1, "cadabrababra", Coordinates(1.0, 1.0), "firdawdwst task", 100f),
-                        QuestTask(2, "tralalerotralala", Coordinates(1.0, 1.0), "first taddsk", 100f),
-                        QuestTask(3, "tungtungtungsahur ", Coordinates(1.0, 1.0), "first dwda task", 100f)
-                    )
+                        QuestTask(0, "abracadabra", Coordinates(latitude=51.3268165, longitude=12.335707), "first task", 100f),
+                        QuestTask(1, "cadabrababra", Coordinates(latitude=51.3268165, longitude=12.335707), "firdawdwst task", 100f),
+                        QuestTask(2, "tralalerotralala", Coordinates(latitude=51.3268165, longitude=12.335707), "first taddsk", 100f),
+                        QuestTask(3, "tungtungtungsahur ", Coordinates(latitude=51.3268165, longitude=12.335707), "first dwda task", 100f)
+                    ),
+                    startLocation = Coordinates(latitude=51.3268165, longitude=12.335707)
                 ),
                 Quest(
-                    name = "cool quest bruh",
+                    name = "mama quest...",
                     tasks = listOf(
-                        QuestTask(0, "abracadabra", Coordinates(1.0, 1.0), "first task", 100f),
-                        QuestTask(1, "cadabrababra", Coordinates(1.0, 1.0), "firdawdwst task", 100f),
-                        QuestTask(2, "tralalerotralala", Coordinates(1.0, 1.0), "first taddsk", 100f),
-                        QuestTask(3, "tungtungtungsahur ", Coordinates(1.0, 1.0), "first dwda task", 100f)
-                    )
+                        QuestTask(0, "ДОМА", Coordinates(latitude=51.3268165, longitude=12.335707), "ты дома )", 50f),
+                        QuestTask(1, "РОССМАН", Coordinates(51.32951639491752, 12.335894998487160), "иди к россману", 50f),
+                        QuestTask(2, "ДОМА", Coordinates(latitude=51.3268165, longitude=12.335707), "снова домой", 50f),
+                        QuestTask(1, "РОССМАН", Coordinates(51.32951639491752, 12.33589499848716), "иди к россману", 50f),
+                    ),
+                    startLocation = Coordinates(latitude=51.3268165, longitude=12.335707)
                 )
             )
         }
@@ -53,9 +55,7 @@ class QuestRepository {
 
     fun loadQuest(id: String) {}
 
-    fun saveProgress() {}
 
-    fun resetQuest() {}
     fun updateRun(state: QuestRun) {
         _questRun.value = state
     }

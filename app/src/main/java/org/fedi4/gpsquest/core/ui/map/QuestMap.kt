@@ -9,7 +9,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -78,7 +80,6 @@ fun QuestMap( //vibe coded this one XD
                 source = source,
                 // Convert a drawable resource to a MapLibre image
                 // drawAsSdf = true allows us to tint the image programmatically
-
             )
         }
     }

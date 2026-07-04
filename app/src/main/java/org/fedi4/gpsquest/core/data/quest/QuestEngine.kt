@@ -7,12 +7,11 @@ import org.fedi4.gpsquest.core.data.models.QuestRun
 import org.fedi4.gpsquest.core.data.models.QuestTask
 
 class QuestEngine(
-    private val repository: QuestRepository
+    private val repository: QuestRepository,
+    private val onTaskCompleted: () -> Unit = {}
 ) {
 
-
     val questRun = repository.questRun
-
 
     fun startQuest(quest: Quest) {
         repository.updateRun(
@@ -22,19 +21,28 @@ class QuestEngine(
             )
         )
         Log.d("QuestEngine", "Quest started: ${quest.name}")
-        Log.d("QuestEngine", "Quest progress: ${questRun.value?.progress}")
-        Log.d("QuestEngine", "Quest tasks: ${questRun.value?.quest?.tasks}")
     }
 
     fun currentTask(): QuestTask? {
         return questRun.value?.quest?.tasks?.get(questRun.value?.progress ?: return null) as QuestTask?
     }
+
     fun updateLocation(location: LocationState) {
-        val task = currentTask()
+        val task = currentTask() ?: return
+        val run = repository.questRun.value ?: return
 
-        val distance = 10000f
+        val distance = location.coordinates.distanceTo(task.coordinates)
 
-        if(distance <= (task?.radius ?: return)){
+        Log.d("QuestEngine", "Player location: ${location.coordinates}")
+        Log.d("QuestEngine", "Distance to task: $distance")
+
+        repository.updateRun(
+            run.copy(
+                distanceToNextTask = distance
+            )
+        )
+
+        if (distance <= task.radius) {
             next()
         }
     }
@@ -47,6 +55,9 @@ class QuestEngine(
                 progress = run.progress + 1
             )
         )
+
         Log.d("QuestEngine", "Quest progress: ${run.progress}")
+
+        onTaskCompleted()
     }
 }

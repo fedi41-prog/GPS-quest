@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import org.fedi4.gpsquest.core.ui.components.rememberLocationPermissionRequester
 import org.fedi4.gpsquest.core.ui.home.HomeScreen
 import org.fedi4.gpsquest.core.ui.quest.QuestScreen
 
@@ -46,9 +47,16 @@ fun AppNavGraph() {
     ) {
 
         composable("home") {
+            val requestPermissions = rememberLocationPermissionRequester(
+                onAllGranted = {
+                    navController.navigate("quest")
+                }
+            )
             HomeScreen(
                 onStartQuest = {
-                    navController.navigate("quest")
+
+                    requestPermissions()
+
                 }
             )
         }

@@ -1,12 +1,22 @@
 package org.fedi4.gpsquest.core.data.gps
 
 import android.Manifest
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
+import android.os.IBinder
 import androidx.core.content.ContextCompat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import org.fedi4.gpsquest.core.service.LocationForegroundService
 
 class LocationRepository(
     private val context: Context,
@@ -19,33 +29,61 @@ class LocationRepository(
     val state: StateFlow<GPSState> =
         _state.asStateFlow()
 
+    private var service: LocationForegroundService? = null
+    private var bound = false
+    private var collectJob: Job? = null
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
+            val localBinder = binder as LocationForegroundService.LocalBinder
+            service = localBinder.getService()
+            bound = true
+
+            collectJob = scope.launch {
+                service?.locationFlow?.collect { location ->
+                    if (location != null) {
+                        _state.value = GPSState.Ready(location)
+                    }
+                }
+            }
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            bound = false
+            service = null
+            collectJob?.cancel()
+        }
+    }
+
     fun start() {
 
         if (!hasPermission()) {
-
             _state.value = GPSState.PermissionMissing
             return
         }
 
         if (!gpsManager.isEnabled()) {
-
             _state.value = GPSState.Disabled
             return
         }
 
         _state.value = GPSState.Loading
 
-        gpsManager.start {
-
-            _state.value = GPSState.Ready(it)
-
-        }
+        val intent = Intent(context, LocationForegroundService::class.java)
+        ContextCompat.startForegroundService(context, intent)
+        context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 
     fun stop() {
 
-        gpsManager.stop()
+        if (bound) {
+            context.unbindService(connection)
+            bound = false
+        }
 
+        context.stopService(Intent(context, LocationForegroundService::class.java))
+        collectJob?.cancel()
     }
 
     private fun hasPermission(): Boolean {
