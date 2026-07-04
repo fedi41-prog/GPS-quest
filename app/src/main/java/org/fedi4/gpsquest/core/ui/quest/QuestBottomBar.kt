@@ -18,8 +18,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.fedi4.gpsquest.core.data.gps.GPSState
 import org.fedi4.gpsquest.core.ui.components.MultipleLinearProgressIndicator
@@ -45,7 +47,7 @@ fun QuestBottomBar(modifier: Modifier = Modifier, viewModel: QuestViewModel = vi
                 .fillMaxWidth().height(50.dp)
         ) {
             Box(modifier = Modifier.fillMaxWidth().height(40.dp).background(heatColor(taskProgressPercent))) {
-                Text(heatLabel(taskProgressPercent) + " - " + taskProgressPercent.toString() + "%", Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                Text(heatLabel(taskProgressPercent), Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontSize = 25.sp, color = Color.White)
             }
 
             MultipleLinearProgressIndicator(

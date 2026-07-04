@@ -25,8 +25,21 @@ class QuestEditViewModel(
         .map { it.find { q -> q.id == questId } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    fun onTaskEdited(task: QuestTask, newName: String, newDesc: String, newRadius: Float) {
-        repo.updateTask(questId, task.copy(name = newName, description = newDesc, radius = newRadius))
+    fun onTaskEdited(task: QuestTask) {
+        repo.updateTask(questId, task)
+    }
+
+
+    fun removeTask(task: QuestTask) {
+        repo.removeTask(questId, task.idx)
+    }
+
+    fun addTask(task: QuestTask) {
+        repo.addTask(questId, task)
+    }
+
+    fun deleteQuest(quest: Quest) {
+        repo.removeQuest(quest)
     }
 
 

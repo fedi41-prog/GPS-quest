@@ -78,16 +78,17 @@ class QuestViewModel(
 
         val progress = questRun.value?.progress ?: return 0f
         val quest = questRun.value?.quest ?: return 0f
+        val startCoordinates = questRun.value?.startCoordinates ?: return 0f
 
         val task = quest.tasks[progress]
 
         val maxTaskDistance =
             if (progress == 0)
-                quest.startLocation.distanceTo(task.coordinates).toFloat()
+                startCoordinates.distanceTo(task.coordinates).toFloat()
             else
                 quest.tasks[progress-1].coordinates.distanceTo(task.coordinates).toFloat()
 
-        return max((maxTaskDistance - distanceToNextTask) / maxTaskDistance, 0f)
+        return max((maxTaskDistance - (distanceToNextTask-task.radius)) / maxTaskDistance, 0f)
     }
 
     companion object {

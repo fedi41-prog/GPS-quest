@@ -2,6 +2,7 @@ package org.fedi4.gpsquest.core.data.quest
 
 import android.util.Log
 import org.fedi4.gpsquest.core.data.gps.LocationState
+import org.fedi4.gpsquest.core.data.models.Coordinates
 import org.fedi4.gpsquest.core.data.models.Quest
 import org.fedi4.gpsquest.core.data.models.QuestRun
 import org.fedi4.gpsquest.core.data.models.QuestTask
@@ -17,7 +18,9 @@ class QuestEngine(
         repository.updateRun(
             QuestRun(
                 quest = quest,
-                progress = 0
+                progress = 0,
+                distanceToNextTask = 0.0,
+                startCoordinates = Coordinates(0.0, 0.0)
             )
         )
         Log.d("QuestEngine", "Quest started: ${quest.name}")
@@ -38,7 +41,8 @@ class QuestEngine(
 
         repository.updateRun(
             run.copy(
-                distanceToNextTask = distance
+                distanceToNextTask = distance,
+                startCoordinates = if (run.progress == 0) location.coordinates else run.startCoordinates
             )
         )
 

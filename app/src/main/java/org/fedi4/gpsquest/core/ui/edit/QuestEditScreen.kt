@@ -44,10 +44,7 @@ fun QuestEditScreen(modifier: Modifier = Modifier, viewModel: QuestEditViewModel
                         task = q.tasks[page],
                         onSave = { updated ->
                             viewModel.onTaskEdited(
-                                updated,
-                                updated.name,
-                                updated.description,
-                                updated.radius
+                                updated
                             )
                         }
                     )

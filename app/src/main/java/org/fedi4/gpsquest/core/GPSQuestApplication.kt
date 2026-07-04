@@ -64,7 +64,6 @@ class GPSQuestApplication : Application() {
                     QuestTask(2, "tralalerotralala", Coordinates(latitude=51.3268165, longitude=12.335707), "first taddsk", 100f),
                     QuestTask(3, "tungtungtungsahur ", Coordinates(latitude=51.3268165, longitude=12.335707), "first dwda task", 100f)
                 ),
-                startLocation = Coordinates(latitude=51.3268165, longitude=12.335707)
             ),
             )
         questRepository.addQuest(
@@ -89,7 +88,6 @@ class GPSQuestApplication : Application() {
                     QuestTask(14, "ДОМА", Coordinates(latitude=51.3268165, longitude=12.335707), "снова домой", 50f),
                     QuestTask(15, "РОССМАН", Coordinates(51.32951639491752, 12.33589499848716), "иди к россману", 50f),
                 ),
-                startLocation = Coordinates(latitude=51.3268165, longitude=12.335707)
             )
         )
 
@@ -104,7 +102,6 @@ class GPSQuestApplication : Application() {
                     QuestTask(3, "task 4", Coordinates(latitude=51.3268165, longitude=12.335707), "home", 50f),
 
                     ),
-                startLocation = Coordinates(latitude=51.3268165, longitude=12.335707)
             )
         )
     }

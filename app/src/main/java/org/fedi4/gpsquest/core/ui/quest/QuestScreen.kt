@@ -63,7 +63,6 @@ import org.fedi4.gpsquest.core.ui.components.rememberLocationPermissionRequester
 import org.fedi4.gpsquest.core.ui.map.QuestMap
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun QuestScreen(
     modifier: Modifier = Modifier,
