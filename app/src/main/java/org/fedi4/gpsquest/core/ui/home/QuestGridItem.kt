@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import org.fedi4.gpsquest.core.data.models.Quest
 
 @Composable
-fun QuestGridItem(modifier: Modifier = Modifier, quest: Quest, onStartQuest: () -> Unit) {
+fun QuestGridItem(modifier: Modifier = Modifier, quest: Quest, onStartQuest: () -> Unit, onEditQuest: () -> Unit) {
 
     Card (modifier = modifier, shape = RoundedCornerShape(20.dp),) {
         Column {
@@ -34,6 +34,18 @@ fun QuestGridItem(modifier: Modifier = Modifier, quest: Quest, onStartQuest: () 
                 Text(modifier = Modifier.fillMaxWidth(0.3f).align(Alignment.CenterVertically), text=quest.tasks.size.toString(), textAlign = TextAlign.Center)
             }
 
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onEditQuest() },
+                color = MaterialTheme.colorScheme.secondary,
+            ) {
+                Text(
+                    "EDIT",
+                    modifier = Modifier.padding(16.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()

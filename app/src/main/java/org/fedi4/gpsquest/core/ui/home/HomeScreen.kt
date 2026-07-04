@@ -20,13 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import org.fedi4.gpsquest.core.data.models.Quest
 import org.fedi4.gpsquest.core.ui.components.GPSStatusView
 import org.fedi4.gpsquest.core.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen (
-    modifier: Modifier = Modifier, viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory), onStartQuest: () -> Unit
+    modifier: Modifier = Modifier, viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory), onStartQuest: (quest:Quest) -> Unit, onEditQuest: (quest:Quest) -> Unit
 ) {
 
     val quests by viewModel.quests.collectAsState()
@@ -44,30 +45,25 @@ fun HomeScreen (
             } },
         modifier = modifier
     ) { innerPadding ->
-//        Column(Modifier.padding(innerPadding)) {
-//            Text("check out all of the questsssss!")
-//            Button(onClick = {
-//                onStartQuest();
-//            }) {
-//                Text("Start Quest")
-//            }
-//        }
+
         val lazyGridState = rememberLazyGridState()
         LazyVerticalGrid(GridCells.Fixed(2), Modifier.padding(innerPadding), lazyGridState) {
 
             items(quests.size) {
 
-                QuestGridItem(Modifier.padding(10.dp), quests[it]) {
-                    onStartQuest()
-                    viewModel.startQuest(quests[it])
+                QuestGridItem(Modifier.padding(10.dp), quests[it], onStartQuest =  {
+                    onStartQuest(quests[it])
+                },onEditQuest =  {
+                    onEditQuest(quests[it])
                 }
+                )
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen() {}
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun HomeScreenPreview() {
+//    HomeScreen() {}
+//}

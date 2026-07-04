@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.plugin.serialization") version "2.4.0"
+//    id("com.google.dagger.hilt.android") version "2.60"
+////    id("kotlin-kapt") version "1.8.22" // or id("com.google.devtools.ksp") if you're on KSP/
+//    id("com.google.devtools.ksp") version "1.8.22-1.0.11"
 }
 
 android {
@@ -63,4 +66,8 @@ dependencies {
     implementation(libs.maplibre.compose)
 
     implementation(libs.kotlinx.serialization.json)
+//    implementation(libs.hilt.android)
+//    kapt(libs.hilt.android.compiler)
+//    // Compose integration for hiltViewModel()
+//    implementation(libs.androidx.hilt.navigation.compose)
 }

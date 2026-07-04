@@ -22,6 +22,9 @@ class HomeViewModel(
         engine.startQuest(quest)
 //        app.isRunningQuest.value = true
     }
+    fun editQuest(quest: Quest) {
+
+    }
 
     companion object {
 

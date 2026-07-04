@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Quest(
+    val id : String,
     val name : String,
     val tasks : List<QuestTask>,
     val startLocation : Coordinates
