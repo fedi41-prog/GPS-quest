@@ -1,7 +1,9 @@
 package org.fedi4.gpsquest.core.data.models
 
 import android.location.Location
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Coordinates(
     val latitude: Double,
     val longitude: Double

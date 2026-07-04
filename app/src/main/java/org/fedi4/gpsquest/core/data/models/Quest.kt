@@ -1,11 +1,15 @@
 package org.fedi4.gpsquest.core.data.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Quest(
     val name : String,
     val tasks : List<QuestTask>,
     val startLocation : Coordinates
 )
 
+@Serializable
 data class QuestTask(
     val idx: Int,
     val name: String,

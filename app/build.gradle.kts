@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.4.0"
 }
 
 android {
@@ -60,4 +61,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.play.services.location)
     implementation(libs.maplibre.compose)
+
+    implementation(libs.kotlinx.serialization.json)
 }

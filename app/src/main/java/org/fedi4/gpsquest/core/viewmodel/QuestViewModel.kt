@@ -17,6 +17,7 @@ import org.fedi4.gpsquest.core.data.gps.LocationRepository
 import org.fedi4.gpsquest.core.data.models.Coordinates
 import org.fedi4.gpsquest.core.data.models.Quest
 import org.fedi4.gpsquest.core.data.quest.QuestRepository
+import kotlin.math.max
 
 class QuestViewModel(
     private val questRepository: QuestRepository,
@@ -80,15 +81,16 @@ class QuestViewModel(
 
         val task = quest.tasks[progress]
 
-        if (progress == 0) {
-            return quest.startLocation.distanceTo(task.coordinates).toFloat() / distanceToNextTask
-        }
-        return quest.tasks[progress-1].coordinates.distanceTo(task.coordinates).toFloat() / distanceToNextTask
+        val maxTaskDistance =
+            if (progress == 0)
+                quest.startLocation.distanceTo(task.coordinates).toFloat()
+            else
+                quest.tasks[progress-1].coordinates.distanceTo(task.coordinates).toFloat()
+
+        return max((maxTaskDistance - distanceToNextTask) / maxTaskDistance, 0f)
     }
 
     companion object {
-
-        @RequiresApi(Build.VERSION_CODES.O)
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
 

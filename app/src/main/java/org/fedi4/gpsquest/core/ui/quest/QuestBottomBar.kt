@@ -34,7 +34,7 @@ fun QuestBottomBar(modifier: Modifier = Modifier, viewModel: QuestViewModel = vi
     val progress = questRun?.progress ?: 0
     val distance = questRun?.distanceToNextTask ?: 0f
 
-    val taskProgressPercent = viewModel.currentTaskProgress(distance.toFloat())
+    val taskProgressPercent = viewModel.currentTaskProgress(distance.toFloat())*100
 
 
     Surface(
