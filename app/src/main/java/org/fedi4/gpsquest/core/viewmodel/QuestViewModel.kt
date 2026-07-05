@@ -75,6 +75,7 @@ class QuestViewModel(
 
         if (questRun.value == null) return 0f
         if (questRun.value?.progress == null) return 0f
+        if (questRun.value?.finished == true) return 0f
 
         val progress = questRun.value?.progress ?: return 0f
         val quest = questRun.value?.quest ?: return 0f

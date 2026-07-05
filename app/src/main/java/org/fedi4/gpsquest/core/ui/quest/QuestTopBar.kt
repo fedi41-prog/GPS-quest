@@ -1,6 +1,9 @@
 package org.fedi4.gpsquest.core.ui.quest
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -10,7 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.fedi4.gpsquest.core.ui.components.heatColor
 import org.fedi4.gpsquest.core.ui.components.heatLabel
@@ -27,7 +33,16 @@ fun QuestTopBar(modifier: Modifier = Modifier, viewModel: QuestViewModel = viewM
 
     TopAppBar(
         title = {
-            Text(text = questRun?.quest?.name?:"")
+
+            Row {
+                Text(text = "GPS-Quest", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.fillMaxWidth())
+                Text(
+                    text = questRun?.quest?.name ?: "",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Light
+                )
+            }
         },
         modifier = modifier,
         actions = {

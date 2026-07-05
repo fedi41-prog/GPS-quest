@@ -61,6 +61,7 @@ import org.fedi4.gpsquest.core.ui.components.LockedTaskPage
 import org.fedi4.gpsquest.core.ui.components.MultipleLinearProgressIndicator
 import org.fedi4.gpsquest.core.ui.components.rememberLocationPermissionRequester
 import org.fedi4.gpsquest.core.ui.map.QuestMap
+import kotlin.math.min
 
 
 @Composable
@@ -81,7 +82,7 @@ fun QuestScreen(
     )  {
         innerPadding ->
 
-        val pagerState = rememberPagerState() { (questRun?.progress ?: -1) + 1 };
+        val pagerState = rememberPagerState() { min((questRun?.progress ?: -1) + 1, questRun?.quest?.tasks?.size?:0) };
         LaunchedEffect(progress) {
             questRun?.let {
                 pagerState.animateScrollToPage(it.progress)
@@ -117,7 +118,7 @@ fun vibrateOnTargetReached(context: Context) {
         context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
         vibrator.vibrate(VibrationEffect.createOneShot(350, VibrationEffect.EFFECT_HEAVY_CLICK))
     } else {
         @Suppress("DEPRECATION")

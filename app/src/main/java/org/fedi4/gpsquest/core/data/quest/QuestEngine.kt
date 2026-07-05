@@ -27,6 +27,7 @@ class QuestEngine(
     }
 
     fun currentTask(): QuestTask? {
+        if (questRun.value?.finished == true) return null
         return questRun.value?.quest?.tasks?.get(questRun.value?.progress ?: return null) as QuestTask?
     }
 

@@ -5,4 +5,6 @@ data class QuestRun (
     val progress: Int = 0,
     val distanceToNextTask: Double = 0.0,
     val startCoordinates: Coordinates,
-)
+) {
+    val finished: Boolean = progress >= quest.tasks.size
+}

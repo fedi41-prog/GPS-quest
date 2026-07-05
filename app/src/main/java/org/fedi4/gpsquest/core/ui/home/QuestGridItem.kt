@@ -34,31 +34,35 @@ fun QuestGridItem(modifier: Modifier = Modifier, quest: Quest, onStartQuest: () 
                 Text(modifier = Modifier.fillMaxWidth(0.3f).align(Alignment.CenterVertically), text=quest.tasks.size.toString(), textAlign = TextAlign.Center)
             }
 
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onEditQuest() },
-                color = MaterialTheme.colorScheme.secondary,
-            ) {
-                Text(
-                    "EDIT",
-                    modifier = Modifier.padding(16.dp),
-                    textAlign = TextAlign.Center
-                )
+            Row() {
+                Surface(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { onEditQuest() },
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(bottomStart = 20.dp)
+                ) {
+                    Text(
+                        "EDIT",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Surface(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { onStartQuest() },
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(bottomEnd = 20.dp)
+                ) {
+                    Text(
+                        "START",
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onStartQuest() },
-                color = MaterialTheme.colorScheme.primary,
-                shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
-            ) {
-                Text(
-                    "START",
-                    modifier = Modifier.padding(16.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
+
 
         }
     }

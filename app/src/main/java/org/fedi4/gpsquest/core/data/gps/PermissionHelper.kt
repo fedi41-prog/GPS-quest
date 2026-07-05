@@ -27,6 +27,6 @@ object LocationPermissionHelper {
     }
 
     fun hasAllRequiredPermissions(context: Context): Boolean {
-        return hasFineLocation(context) && hasBackgroundLocation(context)
+        return hasFineLocation(context) //&& hasBackgroundLocation(context)
     }
 }
