@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -23,23 +24,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.fedi4.gpsquest.core.data.gps.GPSState
 import org.fedi4.gpsquest.core.data.models.Coordinates
 import org.fedi4.gpsquest.core.data.models.QuestTask
 
 @Composable
-fun TaskEditPage(modifier: Modifier = Modifier, task: QuestTask, onSave: (QuestTask) -> Unit) {
-
-    var name by remember { mutableStateOf(task.name) }
-    var description by remember { mutableStateOf(task.description) }
-    var radius by remember { mutableStateOf(task.radius.toString()) }
-//    var coordinates by remember { mutableStateOf(task.coordinates) }
-    var latitude by remember { mutableDoubleStateOf(task.coordinates.latitude) }
-    var longitude by remember { mutableDoubleStateOf(task.coordinates.longitude) }
+fun TaskEditPage(modifier: Modifier = Modifier, task: QuestTask, gps: GPSState, onChange: (QuestTask) -> Unit) {
 
 
+    var name by remember(task.idx) { mutableStateOf(task.name) }
+    var description by remember(task.idx) { mutableStateOf(task.description) }
+    var radius by remember(task.idx) { mutableStateOf(task.radius.toString()) }
+    var latitude by remember(task.idx) { mutableStateOf(task.coordinates.latitude.toString()) }
+    var longitude by remember(task.idx) { mutableStateOf(task.coordinates.longitude.toString()) }
+
+    fun pushChange() {
+        onChange(
+            task.copy(
+                name = name,
+                description = description,
+                radius = radius.toFloatOrNull() ?: task.radius,
+                coordinates = Coordinates(
+                    latitude.toDoubleOrNull() ?: task.coordinates.latitude,
+                    longitude.toDoubleOrNull() ?: task.coordinates.longitude
+                )
+            )
+        )
+    }
 
     Column(modifier = modifier.fillMaxSize().padding(10.dp)) {
-        // TASK ID
         Text(
             text = "TASK " + (task.idx + 1).toString(),
             Modifier.fillMaxWidth().align(Alignment.CenterHorizontally).background(MaterialTheme.colorScheme.primaryContainer),
@@ -50,61 +63,52 @@ fun TaskEditPage(modifier: Modifier = Modifier, task: QuestTask, onSave: (QuestT
             fontWeight = FontWeight.Bold
         )
 
-        // TASK NAME
         OutlinedTextField(
             value = name,
-            onValueChange = { name = it },
+            onValueChange = { name = it; pushChange() },
             label = { Text("Name") },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
             value = description,
-            onValueChange = { description = it },
+            onValueChange = { description = it; pushChange() },
             label = { Text("Description") },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
             value = radius,
-            onValueChange = { radius = it },
+            onValueChange = { radius = it; pushChange() },
             label = { Text("Radius (m)") },
             modifier = Modifier.fillMaxWidth()
         )
+        HorizontalDivider()
         OutlinedTextField(
-            value = latitude.toString(),
-            onValueChange = { latitude = it.toDouble() },
+            value = latitude,
+            onValueChange = { latitude = it; pushChange() },
             label = { Text("Latitude") },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
-            value = longitude.toString(),
-            onValueChange = { longitude = it.toDouble() },
+            value = longitude,
+            onValueChange = { longitude = it; pushChange() },
             label = { Text("Longitude") },
             modifier = Modifier.fillMaxWidth()
         )
 
-
-
         Button(
-            modifier = Modifier.fillMaxWidth(),
+            enabled = gps is GPSState.Ready,
             onClick = {
-            onSave(task.copy(
-                name = name,
-                description = description,
-                radius = radius.toFloatOrNull() ?: task.radius,
-                coordinates = Coordinates(latitude, longitude)
-            ))
-        }) { Text("Save") }
+                if (gps is GPSState.Ready) {
+                    latitude = gps.location.latitude.toString()
+                    longitude = gps.location.longitude.toString()
+                    pushChange()
+                }
+                      }, modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Set to current position")
+        }
+
 
         Spacer(modifier = Modifier.fillMaxHeight())
     }
-
-
-
-//
-//    Column {
-//        OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Name") })
-//        OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text("Description") })
-//        OutlinedTextField(value = radius, onValueChange = { radius = it }, label = { Text("Radius (m)") })
-//
-//    }
 }

@@ -7,9 +7,13 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -27,7 +31,11 @@ import org.fedi4.gpsquest.core.viewmodel.HomeViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen (
-    modifier: Modifier = Modifier, viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory), onStartQuest: (quest:Quest) -> Unit, onEditQuest: (quest:Quest) -> Unit
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
+    onStartQuest: (quest:Quest) -> Unit,
+    onEditQuest: (quest:Quest) -> Unit,
+    onCreateQuest: () -> Unit
 ) {
 
     val quests by viewModel.quests.collectAsState()
@@ -43,7 +51,12 @@ fun HomeScreen (
             BottomAppBar() {
                 Text("HOME SCREEN")
             } },
-        modifier = modifier
+        modifier = modifier,
+        floatingActionButton = {
+            FloatingActionButton(onClick = onCreateQuest) {
+                Icon(Icons.Default.Add, contentDescription = "New quest")
+            }
+        },
     ) { innerPadding ->
 
         val lazyGridState = rememberLazyGridState()

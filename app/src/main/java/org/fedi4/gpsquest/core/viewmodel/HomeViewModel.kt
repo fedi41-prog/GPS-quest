@@ -25,7 +25,7 @@ class HomeViewModel(
     fun editQuest(quest: Quest) {
 
     }
-
+    fun createQuest(): Quest = questRepository.createQuest()
     companion object {
 
         val Factory: ViewModelProvider.Factory = viewModelFactory {

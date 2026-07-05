@@ -3,9 +3,11 @@ package org.fedi4.gpsquest.core.ui
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -28,7 +30,19 @@ fun AppNavGraph() {
     val questRepository = (LocalContext.current.applicationContext as GPSQuestApplication).questRepository
     val questRun by questRepository.questRun.collectAsState()
     val questEngine = (LocalContext.current.applicationContext as GPSQuestApplication).questEngine
+    val locationRepository = (LocalContext.current.applicationContext as GPSQuestApplication).locationRepository
+    val gpsState by locationRepository.state.collectAsState()
 
+    var allGranted: Boolean = remember { false }
+    val requestPermissions = rememberLocationPermissionRequester(
+        onAllGranted = {
+            allGranted = true;
+        }
+    )
+
+    if (!allGranted) {
+        Text("This app needs access to your gps location")
+    }
 
     NavHost(
         navController = navController,
@@ -60,20 +74,20 @@ fun AppNavGraph() {
     ) {
 
         composable("home") {
-            val requestPermissions = rememberLocationPermissionRequester(
-                onAllGranted = {
-                    navController.navigate("quest")
-                }
-            )
+
             HomeScreen(
                 onStartQuest = {
                     it ->
                     questEngine.startQuest(it)
-                    requestPermissions()
+                    navController.navigate("quest")
                 },
                 onEditQuest = {
                     it ->
                     navController.navigate("questEdit/${it.id}")
+                },
+                onCreateQuest = {
+                    val quest = questRepository.createQuest()
+                    navController.navigate("questEdit/${quest.id}")
                 }
             )
         }
@@ -94,7 +108,7 @@ fun AppNavGraph() {
             arguments = listOf(navArgument("questId") { type = NavType.StringType })
         ) { backStackEntry ->
 //            val questId = backStackEntry.arguments!!.getString("questId")!!
-            QuestEditScreen()
+            QuestEditScreen(gps = gpsState)
         }
     }
 }

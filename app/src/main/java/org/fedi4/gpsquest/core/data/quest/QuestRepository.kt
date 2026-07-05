@@ -8,6 +8,7 @@ import org.fedi4.gpsquest.core.data.models.Coordinates
 import org.fedi4.gpsquest.core.data.models.Quest
 import org.fedi4.gpsquest.core.data.models.QuestRun
 import org.fedi4.gpsquest.core.data.models.QuestTask
+import java.util.UUID
 
 class QuestRepository(private val storage: QuestStorage) {
 
@@ -26,6 +27,16 @@ class QuestRepository(private val storage: QuestStorage) {
         if (_quests.value.any { it.id == quest.id }) return
         storage.saveQuest(quest)
         _quests.update { it + quest }
+    }
+
+    fun createQuest(name: String = "New Quest"): Quest {
+        val quest = Quest(
+            id = UUID.randomUUID().toString(),
+            name = name,
+            tasks = emptyList()
+        )
+        addQuest(quest) // already saves to storage + updates the flow
+        return quest
     }
 
     fun removeQuest(quest: Quest) {
@@ -49,6 +60,21 @@ class QuestRepository(private val storage: QuestStorage) {
                 )
             }
         }
+    }
+    fun updateQuest(
+        updatedQuest: Quest
+    ) {
+        _quests.update {
+            quests ->
+            quests.map {
+                quest ->
+                if (quest.id == updatedQuest.id) {
+                    return@map updatedQuest
+                }
+                return@map quest
+            }
+        }
+        storage.saveQuest(updatedQuest)
     }
 
     fun addTask(questId: String, task: QuestTask) {

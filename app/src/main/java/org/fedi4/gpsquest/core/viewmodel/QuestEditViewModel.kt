@@ -7,11 +7,16 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import org.fedi4.gpsquest.core.GPSQuestApplication
+import org.fedi4.gpsquest.core.data.models.Coordinates
 import org.fedi4.gpsquest.core.data.models.Quest
 import org.fedi4.gpsquest.core.data.models.QuestTask
 import org.fedi4.gpsquest.core.data.quest.QuestRepository
@@ -21,25 +26,50 @@ class QuestEditViewModel(
     private val questId: String
 ) : ViewModel() {
 
-    val quest: StateFlow<Quest?> = repo.quests
-        .map { it.find { q -> q.id == questId } }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    private val _draft = MutableStateFlow<Quest?>(null)
+    val draft: StateFlow<Quest?> = _draft.asStateFlow()
 
-    fun onTaskEdited(task: QuestTask) {
-        repo.updateTask(questId, task)
+    init {
+        viewModelScope.launch {
+            _draft.value = repo.quests.value.find { it.id == questId }
+        }
     }
 
-
-    fun removeTask(task: QuestTask) {
-        repo.removeTask(questId, task.idx)
+    fun onTaskEdited(task: QuestTask) {
+        _draft.update { q ->
+            q?.copy(tasks = q.tasks.map { if (it.idx == task.idx) task else it })
+        }
     }
 
     fun addTask(task: QuestTask) {
-        repo.addTask(questId, task)
+        _draft.update { it?.copy(tasks = it.tasks + task) }
     }
 
-    fun deleteQuest(quest: Quest) {
-        repo.removeQuest(quest)
+    fun newTask() {
+        _draft.value?.let { q ->
+            addTask(
+                QuestTask(
+                    q.tasks.size,
+                    "New Task :D",
+                    Coordinates(0.0, 0.0),
+                    "task description...",
+                    40f
+                )
+            )
+        }
+    }
+
+
+    fun removeTask(idx: Int) {
+        _draft.update { it?.copy(tasks = it.tasks.filterNot { t -> t.idx == idx }) }
+    }
+
+    fun save() {
+        _draft.value?.let { repo.updateQuest(it) }
+    }
+
+    fun discard() {
+        _draft.value = repo.quests.value.find { it.id == questId }
     }
 
 

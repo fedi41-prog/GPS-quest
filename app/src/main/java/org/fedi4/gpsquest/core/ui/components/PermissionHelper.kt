@@ -44,13 +44,13 @@ fun rememberLocationPermissionRequester(
 
     return {
         if (LocationPermissionHelper.hasFineLocation(context)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-                !LocationPermissionHelper.hasBackgroundLocation(context)
-            ) {
-                backgroundLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-            } else {
-                onAllGranted()
-            }
+            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q //&&
+               // !LocationPermissionHelper.hasBackgroundLocation(context)
+            //) {
+            //    backgroundLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            //} else {
+            onAllGranted()
+            //}
         } else {
             fineLocationLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
