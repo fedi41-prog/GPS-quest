@@ -18,14 +18,14 @@ class HomeViewModel(
 
     val quests = questRepository.quests
 
-    fun startQuest(quest: Quest){
-        engine.startQuest(quest)
-//        app.isRunningQuest.value = true
-    }
-    fun editQuest(quest: Quest) {
-
-    }
-    fun createQuest(): Quest = questRepository.createQuest()
+    //fun startQuest(quest: Quest){
+    //    engine.startQuest(quest)
+//  //      app.isRunningQuest.value = true
+    //}
+    //fun editQuest(quest: Quest) {
+//
+    //}
+    //fun createQuest(): Quest = questRepository.createQuest()
     companion object {
 
         val Factory: ViewModelProvider.Factory = viewModelFactory {

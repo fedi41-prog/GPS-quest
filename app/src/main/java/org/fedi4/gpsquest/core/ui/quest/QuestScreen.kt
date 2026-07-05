@@ -90,18 +90,20 @@ fun QuestScreen(
         }
 
         // ELEMENTS
-        Column(Modifier.padding(innerPadding)) {
-            HorizontalPager(pagerState, modifier = Modifier) { index ->
-                when {
-                    index < progress -> CompletedTaskPage(task = questRun!!.quest.tasks[index]) // COMPLETED
-                    index == progress -> ActiveTaskPage(task = questRun!!.quest.tasks[index])    // ACTIVE
-                    else -> LockedTaskPage(task = questRun!!.quest.tasks[index])    // LOCKED
+        questRun?.let { run ->
+            Column(Modifier.padding(innerPadding)) {
+                HorizontalPager(pagerState, modifier = Modifier) { index ->
+                    when {
+                        index < progress -> CompletedTaskPage(task = run.quest.tasks[index]) // COMPLETED
+                        index == progress -> ActiveTaskPage(task = run.quest.tasks[index])    // ACTIVE
+                        else -> LockedTaskPage(task = run.quest.tasks[index])    // LOCKED
+                    }
                 }
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            GPSStatusView(modifier=Modifier.fillMaxWidth().height(50.dp), gpsState = gpsState)
+                Spacer(modifier = Modifier.height(10.dp))
+                GPSStatusView(modifier = Modifier.fillMaxWidth().height(50.dp), gpsState = gpsState)
 
-            //QuestMap(Modifier.fillMaxHeight(0.5f), gpsState = gpsState)
+                //QuestMap(Modifier.fillMaxHeight(0.5f), gpsState = gpsState)
+            }
         }
     }
 

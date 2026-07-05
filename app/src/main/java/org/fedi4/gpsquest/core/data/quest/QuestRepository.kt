@@ -41,26 +41,26 @@ class QuestRepository(private val storage: QuestStorage) {
 
     fun removeQuest(quest: Quest) {
         storage.deleteQuest(quest)
-        _quests.update { list -> list.filterNot { it.name == quest.name } }
+        _quests.update { list -> list.filterNot { it.id == quest.id } }
     }
 
-    fun loadQuest(id: String) {
-        // look up in _quests.value by id and set as active quest / questRun, etc.
-    }
+    //fun loadQuest(id: String) {
+    //    // look up in _quests.value by id and set as active quest / questRun, etc.
+    //}
 
 
-    fun updateTask(questId: String, updatedTask: QuestTask) {
-        _quests.update { quests ->
-            quests.map { quest ->
-                if (quest.id != questId) return@map quest
-                quest.copy(
-                    tasks = quest.tasks.map { task ->
-                        if (task.idx == updatedTask.idx) updatedTask else task
-                    }
-                )
-            }
-        }
-    }
+    //fun updateTask(questId: String, updatedTask: QuestTask) {
+    //    _quests.update { quests ->
+    //        quests.map { quest ->
+    //            if (quest.id != questId) return@map quest
+    //            quest.copy(
+    //                tasks = quest.tasks.map { task ->
+    //                    if (task.idx == updatedTask.idx) updatedTask else task
+    //                }
+    //            )
+    //        }
+    //    }
+    //}
     fun updateQuest(
         updatedQuest: Quest
     ) {
@@ -77,33 +77,33 @@ class QuestRepository(private val storage: QuestStorage) {
         storage.saveQuest(updatedQuest)
     }
 
-    fun addTask(questId: String, task: QuestTask) {
-        _quests.update { quests ->
-            quests.map { quest ->
-                if (quest.id != questId) return@map quest
-                quest.copy(tasks = quest.tasks + task)
-            }
-        }
-    }
-
-    fun removeTask(questId: String, taskIdx: Int) {
-        _quests.update { quests ->
-            quests.map { quest ->
-                if (quest.id != questId) return@map quest
-                quest.copy(tasks = quest.tasks.filterNot { it.idx == taskIdx })
-            }
-        }
-    }
-
-    fun reorderTasks(questId: String, newOrder: List<QuestTask>) {
-        _quests.update { quests ->
-            quests.map { quest ->
-                if (quest.id != questId) return@map quest
-                // re-index so idx always matches position, avoiding future duplicate-idx bugs
-                quest.copy(tasks = newOrder.mapIndexed { i, t -> t.copy(idx = i) })
-            }
-        }
-    }
+    //fun addTask(questId: String, task: QuestTask) {
+    //    _quests.update { quests ->
+    //        quests.map { quest ->
+    //            if (quest.id != questId) return@map quest
+    //            quest.copy(tasks = quest.tasks + task)
+    //        }
+    //    }
+    //}
+//
+    //fun removeTask(questId: String, taskIdx: Int) {
+    //    _quests.update { quests ->
+    //        quests.map { quest ->
+    //            if (quest.id != questId) return@map quest
+    //            quest.copy(tasks = quest.tasks.filterNot { it.idx == taskIdx })
+    //        }
+    //    }
+    //}
+//
+    //fun reorderTasks(questId: String, newOrder: List<QuestTask>) {
+    //    _quests.update { quests ->
+    //        quests.map { quest ->
+    //            if (quest.id != questId) return@map quest
+    //            // re-index so idx always matches position, avoiding future duplicate-idx bugs
+    //            quest.copy(tasks = newOrder.mapIndexed { i, t -> t.copy(idx = i) })
+    //        }
+    //    }
+    //}
 
 
 

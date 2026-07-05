@@ -19,8 +19,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.fedi4.gpsquest.core.data.models.Quest
 
 @Composable
@@ -30,8 +32,8 @@ fun QuestGridItem(modifier: Modifier = Modifier, quest: Quest, onStartQuest: () 
         Column {
 
             Row(Modifier.fillMaxWidth().padding(5.dp)) {
-                Text(modifier = Modifier.fillMaxWidth(0.7f).align(Alignment.CenterVertically), text=quest.name, textAlign = TextAlign.Center)
-                Text(modifier = Modifier.fillMaxWidth(0.3f).align(Alignment.CenterVertically), text=quest.tasks.size.toString(), textAlign = TextAlign.Center)
+                Text(modifier = Modifier.fillMaxWidth().align(Alignment.CenterVertically), text=quest.name, textAlign = TextAlign.Center, fontWeight = FontWeight.Medium, fontSize = 15.sp)
+                //Text(modifier = Modifier.fillMaxWidth(0.3f).align(Alignment.CenterVertically), text=quest.tasks.size.toString(), textAlign = TextAlign.Center)
             }
 
             Row() {

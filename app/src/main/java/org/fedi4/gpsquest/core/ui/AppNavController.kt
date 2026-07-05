@@ -5,9 +5,12 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -33,44 +36,27 @@ fun AppNavGraph() {
     val locationRepository = (LocalContext.current.applicationContext as GPSQuestApplication).locationRepository
     val gpsState by locationRepository.state.collectAsState()
 
-    var allGranted: Boolean = remember { false }
+    var allGranted by remember { mutableStateOf(false) }
     val requestPermissions = rememberLocationPermissionRequester(
-        onAllGranted = {
-            allGranted = true;
-        }
+        onAllGranted = { allGranted = true }
     )
+
+    LaunchedEffect(Unit) {
+        requestPermissions()
+    }
 
     if (!allGranted) {
         Text("This app needs access to your gps location")
+        return
     }
 
     NavHost(
         navController = navController,
         startDestination = "home",
-        enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                tween(400)
-            )
-        },
-        exitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                tween(400)
-            )
-        },
-        popEnterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                tween(400)
-            )
-        },
-        popExitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                tween(400)
-            )
-        }
+        enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(400)) },
+        exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(400)) },
+        popEnterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(400)) },
+        popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(400)) }
     ) {
 
         composable("home") {
@@ -107,7 +93,6 @@ fun AppNavGraph() {
             "questEdit/{questId}",
             arguments = listOf(navArgument("questId") { type = NavType.StringType })
         ) { backStackEntry ->
-//            val questId = backStackEntry.arguments!!.getString("questId")!!
             QuestEditScreen(gps = gpsState)
         }
     }

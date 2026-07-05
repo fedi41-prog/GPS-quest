@@ -13,7 +13,7 @@ class QuestStorage(private val context: Context) {
     private val questsDir get() = File(context.filesDir, "quests").apply { mkdirs() }
 
     fun saveQuest(quest: Quest) {
-        val file = File(questsDir, "${quest.name.hashCode()}.json") // better: a stable id field
+        val file = File(questsDir, "${quest.id}.json")
         file.writeText(json.encodeToString(quest))
     }
 
@@ -24,6 +24,6 @@ class QuestStorage(private val context: Context) {
             } ?: emptyList()
 
     fun deleteQuest(quest: Quest) {
-        File(questsDir, "${quest.name.hashCode()}.json").delete()
+        File(questsDir, "${quest.id}.json").delete()
     }
 }
