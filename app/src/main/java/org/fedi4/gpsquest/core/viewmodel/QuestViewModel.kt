@@ -31,16 +31,16 @@ class QuestViewModel(
     val quests = questRepository.quests
 
     init {
-        locationRepository.start()
+        //locationRepository.start()
         Log.d("QuestViewModel", "QuestViewModel created")
     }
 
     fun refreshGPS() {
-        locationRepository.start()
+        //locationRepository.start()
     }
 
     override fun onCleared() {
-        locationRepository.stop()
+        //locationRepository.stop()
     }
 
 

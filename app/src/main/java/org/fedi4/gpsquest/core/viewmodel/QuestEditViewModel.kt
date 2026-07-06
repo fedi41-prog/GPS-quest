@@ -8,11 +8,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.fedi4.gpsquest.core.GPSQuestApplication
@@ -29,6 +26,10 @@ class QuestEditViewModel(
     private val _draft = MutableStateFlow<Quest?>(null)
     val draft: StateFlow<Quest?> = _draft.asStateFlow()
 
+    // wird true, nachdem die Quest gelöscht wurde -> UI kann darauf reagieren und z.B. zurück navigieren
+    private val _deleted = MutableStateFlow(false)
+    val deleted: StateFlow<Boolean> = _deleted.asStateFlow()
+
     init {
         viewModelScope.launch {
             _draft.value = repo.quests.value.find { it.id == questId }
@@ -42,8 +43,21 @@ class QuestEditViewModel(
     }
 
     fun addTask(task: QuestTask) {
-        _draft.update { it?.copy(tasks = it.tasks + task) }
+        _draft.update { q ->
+            q?.copy(tasks = (q.tasks + task).reindexed())
+        }
     }
+
+    fun updateQuest(quest: Quest) {
+        _draft.update { q -> quest }
+    }
+
+    fun updateQuestName(name: String) {
+        _draft.update { q -> q?.copy(
+            name = name
+        ) }
+    }
+
 
     fun newTask() {
         _draft.value?.let { q ->
@@ -59,9 +73,20 @@ class QuestEditViewModel(
         }
     }
 
-
     fun removeTask(idx: Int) {
-        _draft.update { it?.copy(tasks = it.tasks.filterNot { t -> t.idx == idx }) }
+        _draft.update { q ->
+            q?.copy(
+                tasks = q.tasks
+                    .filterNot { it.idx == idx }
+                    .reindexed() // idx nach dem Löschen wieder lückenlos machen
+            )
+        }
+    }
+
+    fun reorderTasks(newOrder: List<QuestTask>) {
+        _draft.update { q ->
+            q?.copy(tasks = newOrder.reindexed())
+        }
     }
 
     fun save() {
@@ -72,6 +97,14 @@ class QuestEditViewModel(
         _draft.value = repo.quests.value.find { it.id == questId }
     }
 
+    fun deleteQuest() {
+        _draft.value?.let { repo.removeQuest(it) }
+        _deleted.value = true
+    }
+
+    // Hilfsfunktion: setzt idx = Listenposition für alle Tasks
+    private fun List<QuestTask>.reindexed(): List<QuestTask> =
+        mapIndexed { i, t -> t.copy(idx = i) }
 
     companion object {
 

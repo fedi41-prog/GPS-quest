@@ -14,6 +14,8 @@ class QuestEngine(
 
     val questRun = repository.questRun
 
+    var currentLocation: LocationState? = null
+
     fun startQuest(quest: Quest) {
         repository.updateRun(
             QuestRun(
@@ -32,23 +34,33 @@ class QuestEngine(
     }
 
     fun updateLocation(location: LocationState) {
-        val task = currentTask() ?: return
-        val run = repository.questRun.value ?: return
+        currentLocation = location
+        tick()
+    }
 
-        val distance = location.coordinates.distanceTo(task.coordinates)
+    fun tick() {
+        currentLocation?.let { location ->
+            currentTask()?.let { task ->
+                repository.questRun.value?.let { run ->
 
-        Log.d("QuestEngine", "Player location: ${location.coordinates}")
-        Log.d("QuestEngine", "Distance to task: $distance")
+                    val distance = location.coordinates.distanceTo(task.coordinates)
 
-        repository.updateRun(
-            run.copy(
-                distanceToNextTask = distance,
-                startCoordinates = if (run.progress == 0) location.coordinates else run.startCoordinates
-            )
-        )
+                    Log.d("QuestEngine", "Player location: ${location.coordinates}")
+                    Log.d("QuestEngine", "Distance to task: $distance")
 
-        if (distance <= task.radius) {
-            next()
+                    repository.updateRun(
+                        run.copy(
+                            distanceToNextTask = distance,
+                            startCoordinates = if (run.progress == 0) location.coordinates else run.startCoordinates
+                        )
+                    )
+
+                    if (distance <= task.radius) {
+                        next()
+                    }
+
+                }
+            }
         }
     }
 
@@ -64,5 +76,6 @@ class QuestEngine(
         Log.d("QuestEngine", "Quest progress: ${run.progress}")
 
         onTaskCompleted()
+        tick()
     }
 }

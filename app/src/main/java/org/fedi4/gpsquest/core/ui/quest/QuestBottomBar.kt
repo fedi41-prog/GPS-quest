@@ -59,18 +59,18 @@ fun QuestBottomBar(modifier: Modifier = Modifier, viewModel: QuestViewModel = vi
         }
     }
 
-    val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-
-        if (granted) {
-            viewModel.refreshGPS()
-        }
-    }
-
-    LaunchedEffect(gpsState) {
-        if (gpsState == GPSState.PermissionMissing) {
-            launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
-    }
+    //val launcher = rememberLauncherForActivityResult(
+    //    ActivityResultContracts.RequestPermission()
+    //) { granted ->
+//
+    //    if (granted) {
+    //        viewModel.refreshGPS()
+    //    }
+    //}
+//
+    //LaunchedEffect(gpsState) {
+    //    if (gpsState == GPSState.PermissionMissing) {
+    //        launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    //    }
+    //}
 }

@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,35 +38,36 @@ fun QuestGridItem(modifier: Modifier = Modifier, quest: Quest, onStartQuest: () 
                 //Text(modifier = Modifier.fillMaxWidth(0.3f).align(Alignment.CenterVertically), text=quest.tasks.size.toString(), textAlign = TextAlign.Center)
             }
 
-            Row() {
+            Column() {
+
+
                 Surface(
-                    modifier = Modifier
-                        .weight(1f)
+                    modifier = Modifier.fillMaxWidth()
                         .clickable { onEditQuest() },
                     color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(bottomStart = 20.dp)
+                    //                 shape = RoundedCornerShape(bottomStart = 20.dp)
                 ) {
                     Text(
                         "EDIT",
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(4.dp),
                         textAlign = TextAlign.Center
                     )
                 }
+                HorizontalDivider()
                 Surface(
-                    modifier = Modifier
-                        .weight(1f)
+                    modifier = Modifier.fillMaxWidth()
                         .clickable { onStartQuest() },
                     color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(bottomEnd = 20.dp)
+                    shape = RoundedCornerShape(bottomEnd = 20.dp, bottomStart = 20.dp)
                 ) {
                     Text(
                         "START",
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(4.dp),
                         textAlign = TextAlign.Center
                     )
                 }
-            }
 
+            }
 
         }
     }
