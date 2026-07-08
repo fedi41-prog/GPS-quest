@@ -64,9 +64,8 @@ class QuestEditViewModel(
             addTask(
                 QuestTask(
                     q.tasks.size,
-                    "New Task :D",
                     Coordinates(0.0, 0.0),
-                    "task description...",
+                    "",
                     40f
                 )
             )

@@ -1,6 +1,9 @@
 package org.fedi4.gpsquest.core.data.quest
 
 import android.util.Log
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.fedi4.gpsquest.core.data.gps.LocationState
 import org.fedi4.gpsquest.core.data.models.Coordinates
 import org.fedi4.gpsquest.core.data.models.Quest
@@ -15,6 +18,13 @@ class QuestEngine(
     val questRun = repository.questRun
 
     var currentLocation: LocationState? = null
+
+    private val _awaitingConfirmation = MutableStateFlow(false)
+    val awaitingConfirmation: StateFlow<Boolean> = _awaitingConfirmation.asStateFlow()
+
+    fun acknowledgeTaskCompleted() {
+        _awaitingConfirmation.value = false
+    }
 
     fun startQuest(quest: Quest) {
         repository.updateRun(
@@ -75,6 +85,7 @@ class QuestEngine(
 
         Log.d("QuestEngine", "Quest progress: ${run.progress}")
 
+        _awaitingConfirmation.value = true
         onTaskCompleted()
         tick()
     }

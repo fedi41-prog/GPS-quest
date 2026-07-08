@@ -6,32 +6,67 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
-import android.os.Build
 import android.os.IBinder
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import org.fedi4.gpsquest.R
 import org.fedi4.gpsquest.core.data.gps.GPSManager
 import org.fedi4.gpsquest.core.data.gps.LocationState
+import kotlin.getValue
+import org.fedi4.gpsquest.core.GPSQuestApplication
+import kotlin.time.Duration.Companion.milliseconds
 
-class LocationForegroundService : Service() {
+class AppForegroundService : Service() {
 
     private lateinit var gpsManager: GPSManager
     private val binder = LocalBinder()
 
+    private var vibrationJob: Job? = null
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    // Zugriff auf QuestEngine über die Application
+    private val questEngine by lazy {
+        (application as GPSQuestApplication).questEngine
+    }
     private val _locationFlow = MutableStateFlow<LocationState?>(null)
     val locationFlow: StateFlow<LocationState?> = _locationFlow.asStateFlow()
 
+    private fun startVibrationLoop() {
+        if (vibrationJob?.isActive == true) return
+        vibrationJob = serviceScope.launch {
+            while (true) {
+                VibrationHelper.vibrate(this@AppForegroundService, 400L)
+                delay(600L.milliseconds)
+            }
+        }
+    }
+
+    private fun stopVibrationLoop() {
+        vibrationJob?.cancel()
+        vibrationJob = null
+    }
+
     inner class LocalBinder : Binder() {
-        fun getService(): LocationForegroundService = this@LocationForegroundService
+        fun getService(): AppForegroundService = this@AppForegroundService
     }
 
     override fun onCreate() {
         super.onCreate()
         gpsManager = GPSManager(this)
+
+        serviceScope.launch {
+            questEngine.awaitingConfirmation.collect { awaiting ->
+                if (awaiting) startVibrationLoop() else stopVibrationLoop()
+            }
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -47,6 +82,7 @@ class LocationForegroundService : Service() {
     override fun onBind(intent: Intent?): IBinder = binder
 
     override fun onDestroy() {
+        stopVibrationLoop()
         gpsManager.stop()
         super.onDestroy()
     }

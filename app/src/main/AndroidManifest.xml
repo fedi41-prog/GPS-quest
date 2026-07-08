@@ -39,7 +39,7 @@
         </activity>
 
         <service
-            android:name=".core.service.LocationForegroundService"
+            android:name=".core.service.AppForegroundService"
             android:foregroundServiceType="location"
             android:exported="false" />
 

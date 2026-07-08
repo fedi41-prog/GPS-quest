@@ -28,7 +28,9 @@ import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,12 +41,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -61,14 +67,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.delay
 import org.fedi4.gpsquest.core.GPSQuestApplication
 import org.fedi4.gpsquest.core.data.gps.GPSState
+import org.fedi4.gpsquest.core.service.VibrationHelper
 import org.fedi4.gpsquest.core.viewmodel.QuestViewModel
 import org.fedi4.gpsquest.core.ui.components.GPSStatusView
 import org.fedi4.gpsquest.core.ui.components.MultipleLinearProgressIndicator
 import org.fedi4.gpsquest.core.ui.components.rememberLocationPermissionRequester
 import org.fedi4.gpsquest.core.ui.map.QuestMap
 import kotlin.math.min
+import kotlin.time.Duration.Companion.milliseconds
 
 
 @Composable
@@ -83,19 +92,11 @@ fun QuestScreen(
     val locationRepository = app.locationRepository
     val gpsState by locationRepository.state.collectAsState()
 
-    val lifecycleOwner = LocalLifecycleOwner.current
+    var showNextPopup by remember { mutableStateOf(false) }
 
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_START -> locationRepository.start()
-                Lifecycle.Event.ON_STOP -> locationRepository.stop()
-                else -> {}
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-    }
+    val context = LocalContext.current
+
+    val awaitingConfirmation by viewModel.awaitingConfirmation.collectAsState()
 
     Scaffold(
         topBar = { QuestTopBar(onExit = onExit) },
@@ -121,9 +122,11 @@ fun QuestScreen(
                 }
             }
 
+
+
             // ELEMENTS
             questRun?.let { run ->
-                Column(Modifier.padding(innerPadding)) {
+                Box(Modifier.padding(innerPadding)) {
                     HorizontalPager(pagerState, modifier = Modifier) { index ->
                         val state = when {
                             index < progress -> TaskState.COMPLETED // COMPLETED
@@ -136,9 +139,28 @@ fun QuestScreen(
                     //Spacer(modifier = Modifier.height(10.dp))
                     //GPSStatusView(modifier = Modifier.fillMaxWidth().height(50.dp), gpsState = gpsState)
 
+
+
                     //QuestMap(Modifier.fillMaxHeight(0.5f), gpsState = gpsState)
                 }
             }
+        }
+        if (awaitingConfirmation) {
+            AlertDialog(
+                onDismissRequest = {  },
+                title = { Text("Task completed!") },
+                text = { Text("just click ok") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            viewModel.acknowledgeTaskCompleted()
+                        },
+                        colors = ButtonDefaults.textButtonColors(contentColor = Color.Green)
+                    ) {
+                        Text("OK")
+                    }
+                },
+            )
         }
     }
 

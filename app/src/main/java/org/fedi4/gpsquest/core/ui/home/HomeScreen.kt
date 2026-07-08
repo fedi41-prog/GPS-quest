@@ -59,7 +59,7 @@ fun HomeScreen (
                         Box (Modifier.fillMaxSize()) {
                             Text("GPSQuest",
                                 Modifier.align(Alignment.Center),
-                                fontSize = 25.sp,
+                                fontSize = 30.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.tertiary,
                                 fontStyle = FontStyle.Italic

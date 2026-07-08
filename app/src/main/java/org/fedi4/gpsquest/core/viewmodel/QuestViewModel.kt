@@ -54,6 +54,13 @@ class QuestViewModel(
 //        app.isRunningQuest.value = true
     }
 
+    // im QuestViewModel
+    val awaitingConfirmation = engine.awaitingConfirmation
+
+    fun acknowledgeTaskCompleted() {
+        engine.acknowledgeTaskCompleted()
+    }
+
     private fun observeGPS() {
         viewModelScope.launch {
             gpsState.collect {

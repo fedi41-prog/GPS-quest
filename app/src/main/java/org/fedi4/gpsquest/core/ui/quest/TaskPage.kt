@@ -56,15 +56,6 @@ fun TaskPage(modifier: Modifier = Modifier, task: QuestTask, state: TaskState) {
             if (state == TaskState.LOCKED) return
             Spacer(Modifier.height(20.dp))
 
-            // TASK NAME
-            Text(
-                text = task.name,
-                Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),
-                textAlign = TextAlign.Center,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Thin
-            )
-            Spacer(Modifier.height(20.dp))
             Text(
                 text = task.description,
                 Modifier.fillMaxWidth().align(Alignment.CenterHorizontally),

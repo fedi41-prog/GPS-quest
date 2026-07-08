@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -38,6 +39,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.fedi4.gpsquest.core.data.gps.GPSState
@@ -64,6 +68,7 @@ fun QuestEditScreen(
         if (deleted) onExit()
     }
 
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -78,10 +83,10 @@ fun QuestEditScreen(
                 )
                 if (editingTasks) {
                     TextButton(onClick = { editingTasks = false }) { Text("Back") }
-                } else {
-                    TextButton(onClick = { viewModel.discard() }) { Text("Discard") }
-                }
-                Button(onClick = { viewModel.save() }) { Text("Save") }
+                } //else {
+                    //TextButton(onClick = { viewModel.discard() }) { Text("Discard") }
+                //}
+                //Button(onClick = { viewModel.save() }) { Text("Save") }
             }
         },
         modifier = modifier
@@ -97,7 +102,7 @@ fun QuestEditScreen(
                     QuestDataEditPage(
                         name = q.name,
                         taskCount = q.tasks.size,
-                        onNameChange = { viewModel.updateQuestName(it) },
+                        onNameChange = { viewModel.updateQuestName(it) ; viewModel.save()},
                         onEditTasks = { editingTasks = true },
                         onDeleteQuest = { showDeleteConfirm = true }
                     )

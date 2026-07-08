@@ -57,7 +57,6 @@ fun TaskEditPage(
     onMoveRight: () -> Unit = {}
 ) {
 
-    var name by remember(task.idx) { mutableStateOf(task.name) }
     var description by remember(task.idx) { mutableStateOf(task.description) }
     var radius by remember(task.idx) { mutableStateOf(task.radius.toString()) }
     var latitude by remember(task.idx) { mutableStateOf(task.coordinates.latitude.toString()) }
@@ -67,7 +66,6 @@ fun TaskEditPage(
     fun pushChange() {
         onChange(
             task.copy(
-                name = name,
                 description = description,
                 radius = radius.toFloatOrNull() ?: task.radius,
                 coordinates = Coordinates(
@@ -105,12 +103,6 @@ fun TaskEditPage(
             }
         }
 
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it; pushChange() },
-            label = { Text("Name") },
-            modifier = Modifier.fillMaxWidth()
-        )
         OutlinedTextField(
             value = description,
             onValueChange = { description = it; pushChange() },
@@ -171,7 +163,7 @@ fun TaskEditPage(
         AlertDialog(
             onDismissRequest = { showDeleteConfirm = false },
             title = { Text("Delete task?") },
-            text = { Text("This will permanently remove \"${task.name}\" from the quest.") },
+            text = { Text("This will permanently remove \"${task.description}\" from the quest.") },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -205,7 +197,7 @@ fun TasksEditScreen(
         if (page == tasks.size) {
             TextButton(
                 modifier = Modifier,
-                onClick = { viewModel.newTask() }
+                onClick = { viewModel.newTask(); viewModel.save() }
             ) {
                 Text("Add task")
             }
@@ -217,17 +209,17 @@ fun TasksEditScreen(
                 gps = gps,
                 canMoveLeft = page > 0,
                 canMoveRight = page < tasks.size - 1,
-                onChange = { task -> viewModel.onTaskEdited(task) },
-                onDelete = { viewModel.removeTask(tasks[page].idx) },
+                onChange = { task -> viewModel.onTaskEdited(task); viewModel.save() },
+                onDelete = { viewModel.removeTask(tasks[page].idx); viewModel.save() },
                 onMoveLeft = {
                     val newOrder = tasks.toMutableList()
                     newOrder[page] = tasks[page - 1].also { newOrder[page - 1] = tasks[page] }
-                    viewModel.reorderTasks(newOrder)
+                    viewModel.reorderTasks(newOrder); viewModel.save()
                 },
                 onMoveRight = {
                     val newOrder = tasks.toMutableList()
                     newOrder[page] = tasks[page + 1].also { newOrder[page + 1] = tasks[page] }
-                    viewModel.reorderTasks(newOrder)
+                    viewModel.reorderTasks(newOrder); viewModel.save()
                 }
             )
         }

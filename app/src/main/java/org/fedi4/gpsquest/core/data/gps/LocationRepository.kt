@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.fedi4.gpsquest.core.service.LocationForegroundService
+import org.fedi4.gpsquest.core.service.AppForegroundService
 
 class LocationRepository(
     private val context: Context,
@@ -29,14 +29,14 @@ class LocationRepository(
     val state: StateFlow<GPSState> =
         _state.asStateFlow()
 
-    private var service: LocationForegroundService? = null
+    private var service: AppForegroundService? = null
     private var bound = false
     private var collectJob: Job? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
-            val localBinder = binder as LocationForegroundService.LocalBinder
+            val localBinder = binder as AppForegroundService.LocalBinder
             service = localBinder.getService()
             bound = true
 
@@ -70,7 +70,7 @@ class LocationRepository(
 
         _state.value = GPSState.Loading
 
-        val intent = Intent(context, LocationForegroundService::class.java)
+        val intent = Intent(context, AppForegroundService::class.java)
         ContextCompat.startForegroundService(context, intent)
         context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
@@ -82,7 +82,7 @@ class LocationRepository(
             bound = false
         }
 
-        context.stopService(Intent(context, LocationForegroundService::class.java))
+        context.stopService(Intent(context, AppForegroundService::class.java))
         collectJob?.cancel()
     }
 

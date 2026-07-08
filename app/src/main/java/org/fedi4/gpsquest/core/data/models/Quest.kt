@@ -12,7 +12,6 @@ data class Quest(
 @Serializable
 data class QuestTask(
     val idx: Int,
-    val name: String,
     val coordinates: Coordinates,
     val description: String,
     val radius: Float
